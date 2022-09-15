@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "F1tlVyH1yNJT+8TdXGTF/MuUkj63xHHVbLblh85hStTN2rMPqluCiuFsofuuwggk4SibIUbiCEyYEw+dnIGWEA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\dieko\\Documents\\Projects\\Coding Projects\\C# Projects\\DBA\\DBA.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dieko\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\dieko\\.nuget\\packages\\spectre.console\\0.45.0\\spectre.console.0.45.0.nupkg.sha512",
+    "C:\\Users\\dieko\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",
+    "C:\\Users\\dieko\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512"
+  ],
+  "logs": []
+}
