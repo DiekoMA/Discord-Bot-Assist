@@ -9,11 +9,10 @@
 
         static async Task MainAsync()
         {
-            //await StartScreen();
-            //await SourceCodeGenerator.Instance.GeneratePythonCode(@"C:\Users\dieko\Documents\Projects\Coding Projects\Python Projects", "Testproject");
-
+            await StartScreen();
             //await ChooseCommands();
-            await ChooseLanguage();
+            //await ChooseLanguage();
+
         }
         static async Task StartScreen()
         {
@@ -41,34 +40,6 @@
                 //await Flow();
                 //CreateDefaultDirectory();
             }
-        }
-
-
-        static async Task Flow()
-        {
-            await AnsiConsole.Status()
-                .Spinner(Spinner.Known.Triangle)
-                .SpinnerStyle(Style.Parse("green bold"))
-                .StartAsync("Creating Directory...", async ctx =>
-                {
-                    await CreateDefaultDirectory();
-                });
-            await ChooseLanguage();
-            await AnsiConsole.Status()
-                .Spinner(Spinner.Known.Triangle)
-                .SpinnerStyle(Style.Parse("green bold"))
-                .StartAsync("Generating Source code...", ctx =>
-                {
-                    CodeCompileUnit compileUnit = new CodeCompileUnit();
-                    CodeNamespace samples = new CodeNamespace("Testing");
-                    samples.Imports.Add(new CodeNamespaceImport("System"));
-                    compileUnit.Namespaces.Add(samples);
-                    CodeTypeDeclaration class1 = new CodeTypeDeclaration("Class1");
-                    samples.Types.Add(class1);
-                    GenerateCSharpCode(compileUnit);
-                    return Task.CompletedTask;
-                });
-
         }
 
         static Task ChooseLanguage()
@@ -146,43 +117,6 @@
         {
             Directory.CreateDirectory(userdefinedPath);
             return Task.CompletedTask;
-        }
-
-
-        /// <summary>Generate the project source code</summary>
-        public static string GenerateCSharpCode(CodeCompileUnit compileunit)
-        {
-            // Generate the code with the C# code provider.
-            CSharpCodeProvider provider = new CSharpCodeProvider();
-
-            // Build the output file name.
-            string sourceFile;
-            if (provider.FileExtension[0] == '.')
-            {
-                sourceFile = "Bot" + provider.FileExtension;
-            }
-            else
-            {
-                sourceFile = "Bot." + provider.FileExtension;
-            }
-
-            // Create a TextWriter to a StreamWriter to the output file.
-            using (StreamWriter sw = new StreamWriter(sourceFile, false))
-            {
-                IndentedTextWriter tw = new IndentedTextWriter(sw, "    ");
-
-                // Generate source code using the code provider.
-                provider.GenerateCodeFromCompileUnit(compileunit, tw,
-                    new CodeGeneratorOptions()
-                    {
-                        IndentString = "   ",
-                    });
-
-                // Close the output file.
-                tw.Close();
-            }
-
-            return sourceFile;
         }
 
         static bool IsValidPath(string path, bool allowRelativePaths = false)
