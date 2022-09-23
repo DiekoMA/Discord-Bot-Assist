@@ -19,9 +19,13 @@ public sealed class SourceCodeGenerator
     /*
     Needs reworking
     */
+
     public Task GenerateCsharpCode(string path, string projectName)
     {
+        CSharpCodeProvider provider = new CSharpCodeProvider();
         var directory = Directory.CreateDirectory(Path.Combine(path, projectName));
+        var modulesDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "modules"));
+        var utilsDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "utils"));
         Process csProc = new Process()
         {
             StartInfo = new ProcessStartInfo()
@@ -41,7 +45,7 @@ public sealed class SourceCodeGenerator
         csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Webhook");
         csProc.Close();
 
-        CSharpCodeProvider provider = new CSharpCodeProvider();
+
 
         // Build the output file name.
         string sourceFile;
@@ -90,9 +94,8 @@ public sealed class SourceCodeGenerator
         };
         jsProc.Start();
         jsProc.StandardInput.WriteLine("npm init -y");
-        jsProc.StandardInput.WriteLine("npm install discord.js");
+        jsProc.StandardInput.WriteLine("npm install dotenv discord.js");
         jsProc.StandardInput.WriteLine("npm install --save-dev eslint");
-        jsProc.StandardInput.WriteLine("npm install dotenv");
         jsProc.Close();
 
         var commandsDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "commands"));
@@ -218,157 +221,6 @@ module.exports = {
     },
 };
         ");
-    }
-
-
-    public Task GenerateTypescriptCode(string path, string projectName)
-    {
-        var directory = Directory.CreateDirectory(Path.Combine(path, projectName));
-        Process tsProc = new Process()
-        {
-            StartInfo = new ProcessStartInfo()
-            {
-                FileName = "cmd",
-                RedirectStandardInput = true,
-                UseShellExecute = false,
-                WorkingDirectory = directory.FullName,
-                CreateNoWindow = true,
-            },
-        };
-        tsProc.Start();
-        tsProc.StandardInput.WriteLine("npm init -y");
-        tsProc.StandardInput.WriteLine("npm install discord.js");
-        tsProc.Close();
-
-        var sourceDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "src"));
-        var commandsDir = Directory.CreateDirectory(Path.Combine(sourceDir.FullName, "commands"));
-        var listenersDir = Directory.CreateDirectory(Path.Combine(sourceDir.FullName, "listeners"));
-        File.WriteAllText(Path.Combine(directory.FullName, ".gitignore"), "node_modules");
-        File.WriteAllText(Path.Combine(directory.FullName, "tsconfig.json"),
-@"{
-""compilerOptions"": {
-    ""target"": ""ESNext"",
-    ""module"": ""commonjs"",
-    ""rootDir"": ""./src/"",
-    ""outDir"": ""./dist/"",
-    ""strict"": true,
-    ""moduleResolution"": ""node"",
-    ""importHelpers"": true,
-    ""experimentalDecorators"": true,
-    ""esModuleInterop"": true,
-    ""skipLibCheck"": true,
-    ""allowSyntheticDefaultImports"": true,
-    ""resolveJsonModule"": true,
-    ""forceConsistentCasingInFileNames"": true,
-    ""removeComments"": true,
-    ""typeRoots"": [
-        ""node_modules/@types""
-    ],
-        ""sourceMap"": false,
-        ""baseUrl"": ""./""
-    },
-        ""files"": [
-            ""src/Bot.ts""
-        ],
-        ""include"": [
-            ""./**/*.ts""
-        ],
-        ""exclude"": [
-            ""node_modules"",
-                ""dist""
-        ],
-    }
-");
-        File.WriteAllText(Path.Combine(sourceDir.FullName, "Bot.ts"),
-
-@"import { Client, ClientOptions } from ""discord.js"";
-import interactionCreate from ""./listeners/interactionCreate"";
-import ready from ""./listeners/ready"";
-
-const token = """"; // add your token here
-
-console.log(""Bot is starting..."");
-
-const client = new Client({
-    intents: []
-});
-
-ready(client);
-interactionCreate(client);
-
-client.login(token);
-
-        ");
-        File.WriteAllText(Path.Combine(listenersDir.FullName, "ready.ts"), @"
-import { Client } from ""discord.js"";
-import { Commands } from "".. / Commands"";
-
-export default (client: Client): void => {
-    client.on(""ready"", async () => {
-        if (!client.user || !client.application) {
-            return;
-        }
-
-        await client.application.commands.set(Commands);
-
-        console.log(`${client.user.username is online`});
-    });
-};
-        ");
-
-        File.WriteAllText(Path.Combine(listenersDir.FullName, "interactionCreate.ts"),
-@"import { BaseCommandInteraction, Client, Interaction } from ""discord.js"";
-
-export default(client: Client): void => {
-    client.on(""interactionCreate"", async(interaction: Interaction) => {
-        if (interaction.isCommand() || interaction.isContextMenu())
-        {
-            await handleSlashCommand(client, interaction);
-        }
-    });
-};
-
-const handleSlashCommand = async(client: Client, interaction: CommandInteraction): Promise<void> => {
-    // handle slash command here
-};
-        ");
-
-        File.WriteAllText(Path.Combine(sourceDir.FullName, "Command.ts"), @"
-import { CommandInteraction, ChatInputApplicationCommandData, Client } from ""discord.js"";
-
-export interface Command extends ChatInputApplicationCommandData{
-    run: (client: Client, interaction: CommandInteraction) => void;
-}
-        ");
-
-        File.WriteAllText(Path.Combine(commandsDir.FullName, "Hello.ts"), @"
-import { BaseCommandInteraction, Client } from ""discord.js"";
-import { Command } from ""../Command"";
-
-export const Hello: Command = {
-    name: ""hello"",
-    description: ""Returns a greeting"",
-    type: ""CHAT_INPUT"",
-    run: async(client: Client, interaction: BaseCommandInteraction) => {
-        const content = ""Hello there!"";
-
-        await interaction.followUp({
-            ephemeral: true,
-            content
-        });
-    }
-};
-        ");
-
-        File.WriteAllText(Path.Combine(sourceDir.FullName, "Commands.ts"),
-@"import { Command } from ""./Command"";
-import { Hello } from ""./commands/Hello"";
-
-//register the rest of your commands here
-
-export const Commands: Command[] = [Hello];
-        ");
-        return Task.CompletedTask;
     }
 
     public Task GeneratePythonCode(string path, string projectName)
