@@ -4,8 +4,8 @@
 A template engine for creating bots in different languages like C#, Javascript, Typescript, Lua and Python
 
 Languages currently supported
-- [X] JavaScript (discord.js)
-~~Typescript~~
+- [X] JavaScript (discord.js) 
+- ~~Typescript~~
 - [ ] C# (soon)
 - [ ] Lua (soon)
 - [ ] Python (soon)
