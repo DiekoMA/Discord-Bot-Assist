@@ -31,34 +31,34 @@
                     .Title("What is your prefered language")
                     .PageSize(7)
                     .AddChoices(new String[] {
-                        "C#", "Javascript", "Typescript",  "Lua", "Python"
+                        "C# - Not Working", "Javascript",  "Lua - Not Working", "Python - Not Working"
                     })
             );
 
             switch (languages)
             {
-                case "C#":
-                    if (!AnsiConsole.Confirm("Use Default output ?"))
-                    {
-                        AnsiConsole.MarkupLine("Please input a directory location");
-                        var path = AnsiConsole.Ask<string>("Path: ");
-                        var validation = IsValidPath(path);
-                        if (validation)
-                        {
-                            await CreateDirectory(path);
-                        }
-                        else
-                        {
-                            AnsiConsole.Write("Invalid Path");
-                            await StartScreen();
-                        }
-                    }
-                    else
-                    {
-                        //await Flow();
-                        //CreateDefaultDirectory();
-                    }
-                    break;
+                // case "C#":
+                //     if (!AnsiConsole.Confirm("Use Default output ?"))
+                //     {
+                //         AnsiConsole.MarkupLine("Please input a directory location");
+                //         var path = AnsiConsole.Ask<string>("Path: ");
+                //         var validation = IsValidPath(path);
+                //         if (validation)
+                //         {
+                //             await CreateDirectory(path);
+                //         }
+                //         else
+                //         {
+                //             AnsiConsole.Write("Invalid Path");
+                //             await StartScreen();
+                //         }
+                //     }
+                //     else
+                //     {
+                //         //await Flow();
+                //         //CreateDefaultDirectory();
+                //     }
+                //     break;
 
                 case "Javascript":
                     if (!AnsiConsole.Confirm("Use Default output ?"))
@@ -194,17 +194,17 @@
                     }
                     break;
 
-                case "Lua":
+                    // case "Lua":
 
-                    break;
+                    //     break;
 
-                case "Python":
-                    /// <summary>Placeholder Python generation Code</summary>
-                    break;
+                    // case "Python":
+                    //     /// <summary>Placeholder Python generation Code</summary>
+                    //     break;
 
-                default:
+                    // default:
 
-                    break;
+                    //     break;
             }
         }
 
@@ -257,7 +257,7 @@
                 else
                 {
                     string root = Path.GetPathRoot(path);
-                    isValid = string.IsNullOrEmpty(root.Trim(new char[] { '\\', '/' })) == false;
+                    isValid = string.IsNullOrEmpty(root?.Trim(new char[] { '\\', '/' })) == false;
                 }
             }
             catch (Exception)

@@ -1,19 +1,12 @@
 public sealed class SourceCodeGenerator
 {
-    CodeCompileUnit compileUnit;
     private static readonly SourceCodeGenerator _instance = new SourceCodeGenerator();
 
     static SourceCodeGenerator() { }
 
     private SourceCodeGenerator()
     {
-        /// <summary>Exclusively for C#</summary>
-        CodeCompileUnit compileUnit = new CodeCompileUnit();
-        CodeNamespace samples = new CodeNamespace("Testing");
-        samples.Imports.Add(new CodeNamespaceImport("System"));
-        compileUnit.Namespaces.Add(samples);
-        CodeTypeDeclaration class1 = new CodeTypeDeclaration("Class1");
-        samples.Types.Add(class1);
+
     }
 
     /*
@@ -22,63 +15,63 @@ public sealed class SourceCodeGenerator
 
     public Task GenerateCsharpCode(string path, string projectName)
     {
-        CSharpCodeProvider provider = new CSharpCodeProvider();
-        var directory = Directory.CreateDirectory(Path.Combine(path, projectName));
-        var modulesDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "modules"));
-        var utilsDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "utils"));
-        Process csProc = new Process()
-        {
-            StartInfo = new ProcessStartInfo()
-            {
-                FileName = "cmd",
-                RedirectStandardInput = true,
-                UseShellExecute = false,
-                WorkingDirectory = directory.FullName,
-                CreateNoWindow = true,
-            },
-        };
-        csProc.Start();
-        csProc.StandardInput.WriteLine("dotnet new console");
-        csProc.StandardInput.WriteLine($"dotnet add package Discord.Net");
-        csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Commands");
-        csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Interactions");
-        csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Webhook");
-        csProc.Close();
+        // CSharpCodeProvider provider = new CSharpCodeProvider();
+        // var directory = Directory.CreateDirectory(Path.Combine(path, projectName));
+        // var modulesDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "modules"));
+        // var utilsDir = Directory.CreateDirectory(Path.Combine(directory.FullName, "utils"));
+        // Process csProc = new Process()
+        // {
+        //     StartInfo = new ProcessStartInfo()
+        //     {
+        //         FileName = "cmd",
+        //         RedirectStandardInput = true,
+        //         UseShellExecute = false,
+        //         WorkingDirectory = directory.FullName,
+        //         CreateNoWindow = true,
+        //     },
+        // };
+        // csProc.Start();
+        // csProc.StandardInput.WriteLine("dotnet new console");
+        // csProc.StandardInput.WriteLine($"dotnet add package Discord.Net");
+        // csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Commands");
+        // csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Interactions");
+        // csProc.StandardInput.WriteLine($"dotnet add package Discord.Net.Webhook");
+        // csProc.Close();
 
 
 
-        // Build the output file name.
-        string sourceFile;
-        if (provider.FileExtension[0] == '.')
-        {
-            sourceFile = projectName + provider.FileExtension;
-        }
-        else
-        {
-            sourceFile = $"{projectName}." + provider.FileExtension;
-        }
+        // // Build the output file name.
+        // string sourceFile;
+        // if (provider.FileExtension[0] == '.')
+        // {
+        //     sourceFile = projectName + provider.FileExtension;
+        // }
+        // else
+        // {
+        //     sourceFile = $"{projectName}." + provider.FileExtension;
+        // }
 
-        // Create a TextWriter to a StreamWriter to the output file.
-        using (StreamWriter sw = new StreamWriter(Path.Combine(directory.FullName, sourceFile), false))
-        {
-            IndentedTextWriter tw = new IndentedTextWriter(sw, "    ");
+        // // Create a TextWriter to a StreamWriter to the output file.
+        // using (StreamWriter sw = new StreamWriter(Path.Combine(directory.FullName, sourceFile), false))
+        // {
+        //     IndentedTextWriter tw = new IndentedTextWriter(sw, "    ");
 
-            // Generate source code using the code provider.
-            provider.GenerateCodeFromCompileUnit(compileUnit, tw,
-                new CodeGeneratorOptions()
-                {
-                    IndentString = "   ",
-                });
+        //     // Generate source code using the code provider.
+        //     provider.GenerateCodeFromCompileUnit(compileUnit, tw,
+        //         new CodeGeneratorOptions()
+        //         {
+        //             IndentString = "   ",
+        //         });
 
-            // Close the output file.
-            tw.Close();
-        }
+        //     // Close the output file.
+        //     tw.Close();
+        // }
 
         return Task.CompletedTask;
     }
 
     /// <summary>Generates a basic node js project to the selected directory and installs the required packages</summary>
-    public async Task GenerateJavascriptCode(string path, string projectName)
+    public Task GenerateJavascriptCode(string path, string projectName)
     {
         var directory = Directory.CreateDirectory(Path.Combine(path, projectName));
         Process jsProc = new Process()
@@ -221,6 +214,8 @@ module.exports = {
     },
 };
         ");
+
+        return Task.CompletedTask;
     }
 
     public Task GeneratePythonCode(string path, string projectName)
